@@ -1,0 +1,48 @@
+{% extends "layout.html.twig" %}
+{% set medicamentMenu = true %}
+
+{% block title %}{{ medicament.nomCommercial }}{% endblock %}
+
+{% block content %}
+<h2 class="text-center">{{ block('title') }}</h2>
+<div class="well">
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Famille</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ medicament.famille.libelle }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Dépôt légal</label>
+            <div class="col-sm-9">
+            <p class="form-control-static">{{ medicament.depotLegal }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Composition</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ medicament.composition }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Effets secondaires</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ medicament.effets }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Contre-indication</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ medicament.contreIndication }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Prix d'un échantillon</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ medicament.prixEchantillon }}</p>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
