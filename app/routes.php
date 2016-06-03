@@ -10,7 +10,8 @@ $app->get('/', function () use ($app) {
 // Détails sur un médicament
 $app->get('/medicament/{id}', function($id) use ($app) {
     $medicament = $app['dao.medicament']->find($id);
-    return $app['twig']->render('medicament.html.twig', array('medicament' => $medicament));
+	$interactions = $app['dao.medicament']->findInteractions($id);
+    return $app['twig']->render('medicament.html.twig', array('medicament' => $medicament, 'interactions' => $interactions));
 })->bind('medicament');
 
 // Liste de tous les médicaments
@@ -27,15 +28,12 @@ $app->get('/medicament/recherche/', function() use ($app) {
 
 // Résultats de la recherche de médicaments
 $app->post('/medicament/resultats/', function(Request $request) use ($app) {
-   if( $request->request->has('famille')) {
-    $familleId =  $request->request->get('famille'); 
-        $medicaments = $app['dao.medicament']->findAllByFamille($familleId);
-   }
-  else {
-      $nomCommercial = $request->request->get('nomCommercial');
-      $familleId = $request->request->get('famille');
+   if( $request->request->has('famille') &&  $request->request->has('nom')) {
+		$nomCommercial = $request->request->get('nom');
+	   	$familleId = $request->request->get('famille');
         $medicaments = $app['dao.medicament']->findAllByNomFamille($nomCommercial, $familleId);
-  }
+   }
+  
     return $app['twig']->render('medicaments_resultats.html.twig', array('medicaments' => $medicaments));
 })->bind('medicament_resultats');
 

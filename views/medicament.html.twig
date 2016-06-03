@@ -43,6 +43,24 @@
                 <p class="form-control-static">{{ medicament.prixEchantillon }}</p>
             </div>
         </div>
+		<h3>Interactions Médicamenteuses</h3>
+		<div class="table-responsive">
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Famille</th>
+                </tr>
+            </thead>
+            {% for interaction in interactions %}
+                <tr>
+                    <td><a href="/medicament/{{ interaction.id }}">{{ interaction.nomCommercial }}</a></td>
+					<td>{{ interaction.famille.libelle }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+		
     </form>
 </div>
 {% endblock %}

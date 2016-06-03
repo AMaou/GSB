@@ -1,7 +1,7 @@
 {% extends "layout.html.twig" %}
 {% set medicamentMenu = true %}
 
-{% block title %}Médicaments{% endblock %}
+{% block title %}Médicament{% endblock %}
 
 {% block content %}
 <h2 class="text-center">{{ block('title') }}</h2>
@@ -11,13 +11,13 @@
             <thead>
                 <tr>
                     <th>Nom commercial</th>
-                    <th>Interactions</th>
+                    <th>Famille</th>
                 </tr>
             </thead>
             {% for medicament in medicaments %}
                 <tr>
                     <td><a href="/medicament/{{ medicament.id }}">{{ medicament.nomCommercial }}</a></td>
-                    <td>{{ medicament.interaction.medId }}</td>
+					<td>{{ medicament.famille.libelle }}</td>
                 </tr>
             {% endfor %}
         </table>

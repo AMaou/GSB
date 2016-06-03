@@ -60,7 +60,7 @@ class Medicament
      */
     private $famille;
 	
-	private $interaction;
+	
 
     public function getId() {
         return $this->id;
@@ -126,11 +126,5 @@ class Medicament
         $this->famille = $famille;
     }
 	
-	  public function getInteraction() {
-        return $this->interaction;
-    }
 
-    public function setInteraction(Interaction $interaction) {
-        $this->interaction = $interaction;
-    }
 }

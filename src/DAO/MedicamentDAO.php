@@ -69,9 +69,9 @@ class MedicamentDAO extends DAO
         else
             throw new \Exception("Aucun médicament ne correspond à l'identifiant " . $id);
     }
-	       public function findAllByNomFamille($nomCommercial,$familleID) {
-        $sql = "select * from medicament join famille on medicament.id_famille = famille.id_famille where nom_commercial like ? and lib_famille like ? order by nom_commercial";
-        $result = $this->getDb()->fetchAll($sql, array('%'.$nomCommercial.'%','%'.$familleID.'%'));
+	       public function findAllByNomFamille($nomCommercial, $familleID) {
+        $sql = "select * from medicament join famille on medicament.id_famille = famille.id_famille where medicament.nom_commercial like ? and medicament.id_famille = ? order by nom_commercial";
+        $result = $this->getDb()->fetchAll($sql, array('%'.$nomCommercial.'%', $familleID));
         
         // Convertit les résultats de requête en tableau d'objets du domaine
         $medicaments = array();
@@ -80,6 +80,20 @@ class MedicamentDAO extends DAO
             $medicaments[$medicamentId] = $this->buildDomainObject($row);
         }
         return $medicaments;
+    }
+	
+	public function findInteractions($id) {
+        $sql = "SELECT m.id_medicament, m.id_famille, m.depot_legal, m.nom_commercial, m.composition, m.effets, 					m.contre_indication, m.prix_echantillon from medicament m join interagir on m.id_medicament= 								interagir.med_id_medicament and interagir.id_medicament=?";
+        $result = $this->getDb()->fetchAll($sql, array($id));
+		
+		$interactions = array();
+		if (!empty($result)){
+        foreach ($result as $row) {
+            $medicamentId = $row['id_medicament'];
+            $interactions[$medicamentId] = $this->buildDomainObject($row);
+        }
+		}
+		return $interactions;
     }
 
     /**
@@ -106,12 +120,6 @@ class MedicamentDAO extends DAO
             $medicament->setFamille($famille);
         }
    
-        if (array_key_exists('id_medicament.med_id_medicament', $row)) {
-            // Trouve et définit l'interaction associée
-            $InteractionId = $row['id_medicament.med_id_medicament'];
-            $interaction = $this->interactionDAO->find($interactionId);
-            $interaction->setInteraction($interaction);
-        }
         return $medicament;
     }
 }
