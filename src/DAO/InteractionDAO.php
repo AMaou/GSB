@@ -67,7 +67,46 @@ class InteractionDAO extends DAO
         else
             throw new \Exception("Aucun médicament ne correspond à l'identifiant " . $id);
     }
-	   
+	
+    
+
+    public function save(Interaction $interaction) {
+
+            $interactionData = array(
+
+            'id_medicament' => $interaction->getId(),
+
+            'med_id_medicament' => $interaction->getMedId(),
+
+            );
+            
+        $this->getDb()->insert('interagir', $interactionData);
+        
+            $interactionData = array(
+
+            'id_medicament' => $interaction->getMedId(),
+
+            'med_id_medicament' => $interaction->getId(),
+
+            );
+          
+           $this->getDb()->insert('interagir', $interactionData);
+        
+
+    }
+
+
+
+    public function delete($id,$medId) {
+
+       
+
+        $this->getDb()->delete('interagir', array('id_medicament' => $id,'med_id_medicament' => $medId));
+        $this->getDb()->delete('interagir', array('id_medicament' => $medId,'med_id_medicament' => $id));
+
+    }
+
+
 
     /**
      * Crée un objet Medicament à partir d'une ligne de résultat BD

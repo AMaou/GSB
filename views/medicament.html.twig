@@ -52,12 +52,40 @@
                     <th>Famille</th>
                 </tr>
             </thead>
-            {% for interaction in interactions %}
+       <!-- -->     
+                {% for interaction in interactions %}
                 <tr>
-                    <td><a href="/medicament/{{ interaction.id }}">{{ interaction.nomCommercial }}</a></td>
-					<td>{{ interaction.famille.libelle }}</td>
+                <td><a href="/medicament/{{ interaction.id }}">{{ interaction.nomCommercial }}</a></td>
+				<td>{{ interaction.famille.libelle }}</td>
+                <td>
+                       
+                        <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#articleDialog{{ interaction.id }}"><span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                        <div class="modal fade" id="articleDialog{{ interaction.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        voulez vous vraiment supprimer cette interaction ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                        <a href="{{ path('interaction_delete', { 'id': interaction.id,'medId':medicament.id }) }}" class="btn btn-danger">Confirm</a>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+                    </td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
+        
+    <div>
+        <a href="{{ path('interaction_add') }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add </button></a>
+    </div>
+  <!-- -->  
         </table>
     </div>
 		

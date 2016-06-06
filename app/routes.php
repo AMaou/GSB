@@ -1,6 +1,14 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
+
+use GSB\Domain\Interaction;
+
+use GSB\Form\Type\InteractionType;
+
+
+
+
 //
 // Page d'accueil
 $app->get('/', function () use ($app) {
@@ -46,4 +54,44 @@ $app->get('/login', function(Request $request) use ($app) {
         'last_username' => $app['session']->get('_security.last_username'),
     ));
 })->bind('login');
+
+// Ajouter interaction,
+
+$app->match('interaction/add', function(Request $request) use ($app) {
+
+    $interaction = new Interaction();
+
+    $interactionForm = $app['form.factory']->create(new InteractionType(), $interaction);
+
+    $interactionForm->handleRequest($request);
+
+    if ($interactionForm->isSubmitted() && $interactionForm->isValid()) {
+
+        $app['dao.interaction']->save($interaction);
+
+        $app['session']->getFlashBag()->add('success', 'Interaction ajoutée!');
+
+    }
+
+    return $app['twig']->render('interaction_form.html.twig', array(
+
+        'title' => 'New interaction', //title ?
+
+        '$interactionForm' => $interactionForm->createView()));
+
+})->bind('interaction_add');
+
+
+// supp interaction
+
+$app->get('interaction/{id}/delete', function($id,$medId, Request $request) use ($app) {
+
+
+    $app['dao.interaction']->delete($id,$medId);
+
+    $app['session']->getFlashBag()->add('success', 'Interaction supprimée!');
+
+    return $app->redirect($app['url_generator']->generate('home')); //generate home ?? 
+
+})->bind('interaction_delete');
 

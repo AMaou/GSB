@@ -11,6 +11,15 @@ $app->register(new Silex\Provider\DoctrineServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
+$app['twig'] = $app->share($app->extend('twig', function(Twig_Environment $twig, $app) {
+
+$twig->addExtension(new Twig_Extensions_Extension_Text());
+    return $twig;
+
+}));
+$app->register(new Silex\Provider\FormServiceProvider());
+$app->register(new Silex\Provider\TranslationServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\SecurityServiceProvider(), array(
@@ -45,4 +54,8 @@ $app['dao.type'] = $app->share(function ($app) {
 });
 $app['dao.visiteur'] = $app->share(function ($app) {
     return new GSB\DAO\VisiteurDAO($app['db']);
+});
+
+$app['dao.interaction'] = $app->share(function ($app) {
+    return new GSB\DAO\interactionDAO($app['db']);
 });
