@@ -57,11 +57,12 @@ $app->get('/login', function(Request $request) use ($app) {
 
 // Ajouter interaction,
 
-$app->match('interaction/add', function(Request $request) use ($app) {
-
+$app->match('/medicament/{id}/interaction/add', function(Request $request,$id) use ($app) {
+	
+	$array['medicament']=$app['dao.medicament']->find($id);
     $interaction = new Interaction();
-
-    $interactionForm = $app['form.factory']->create(new InteractionType(), $interaction);
+	$interaction->setMedicament1($array['medicament']);
+    $interactionForm = $app['form.factory']->create(new InteractionType($array['medicament']), $interaction);
 
     $interactionForm->handleRequest($request);
 
@@ -72,26 +73,26 @@ $app->match('interaction/add', function(Request $request) use ($app) {
         $app['session']->getFlashBag()->add('success', 'Interaction ajoutée!');
 
     }
+	$array['title'] = 'Ajout interaction '.$array['medicament'];
+	$array['$interactionForm'] = $interactionForm->createView();
 
-    return $app['twig']->render('interaction_form.html.twig', array(
-
-        'title' => 'New interaction', //title ?
-
-        '$interactionForm' => $interactionForm->createView()));
+    return $app['twig']->render('interaction_form.html.twig',$array);
 
 })->bind('interaction_add');
 
 
 // supp interaction
 
-$app->get('interaction/{id}/delete', function($id,$medId, Request $request) use ($app) {
-
+$app->match('/medicament/{id}/interaction/delete/{medId}', function($id,$medId) use ($app) {
 
     $app['dao.interaction']->delete($id,$medId);
 
     $app['session']->getFlashBag()->add('success', 'Interaction supprimée!');
 
-    return $app->redirect($app['url_generator']->generate('home')); //generate home ?? 
+	$medicament =$app['dao.medicament']->find($id);
+	$interactions = $app['dao.interaction']->findAllById($id);
+
+    return $app['twig']->render('medicament.html.twig', array('medicament' =>$medicament, 'interactions'=>$interaction));
 
 })->bind('interaction_delete');
 
