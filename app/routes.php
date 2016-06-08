@@ -1,8 +1,11 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use GSB\Domain\Interaction;
+use GSB\Domain\Medicament;
+use GSB\Domain\Famille;
+
 use GSB\Form\Type\InteractionType;
 
 
@@ -15,11 +18,11 @@ $app->get('/', function () use ($app) {
     return $app['twig']->render('index.html.twig');
 })->bind('home');
 
-// Détails sur un médicament
-$app->get('/medicament/{id}', function($id) use ($app) {
-    $medicament = $app['dao.medicament']->find($id);
-	$interactions = $app['dao.medicament']->findInteractions($id);
-    return $app['twig']->render('medicament.html.twig', array('medicament' => $medicament, 'interactions' => $interactions));
+// Affichage du détail d'un médicament (en fonction de l'id rentré en paramètre)
+$app->get('/medicament/{id}', function($id) use($app) {
+  $medicament = $app['dao.medicament']->find($id);
+  $interactions = $app['dao.interaction']->findAllById($id);
+  return $app['twig']->render('medicament.html.twig', array('medicament' => $medicament,'interactions'=> $interactions));
 })->bind('medicament');
 
 // Liste de tous les médicaments
@@ -55,45 +58,29 @@ $app->get('/login', function(Request $request) use ($app) {
     ));
 })->bind('login');
 
-// Ajouter interaction,
-
-$app->match('/medicament/{id}/interaction/add', function(Request $request,$id) use ($app) {
-	
-	$array['medicament']=$app['dao.medicament']->find($id);
-    $array['medicaments']=$app['dao.medicament']->findAll();
-    $interaction = new Interaction();
-	$interaction->setId($array['medicament']);
-    $interactionForm = $app['form.factory']->create(new InteractionType($array['medicaments']), $interaction);
-
-    $interactionForm->handleRequest($request);
-
-    if ($interactionForm->isSubmitted() && $interactionForm->isValid()) {
-
-        $app['dao.interaction']->save($interaction);
-
-        $app['session']->getFlashBag()->add('success', 'Interaction ajoutée!');
-
-    }
-	$array['title'] = 'Ajout interaction '.$array['medicament'];
-	$array['$interactionForm'] = $interactionForm->createView();
-
-    return $app['twig']->render('interaction_form.html.twig',$array);
-
+//Ajout d'une intéraction
+$app->match('/medicament/{id}/interactions/add', function(Request $request, $id) use($app) {
+  $array['medicaments'] = $app['dao.medicament']->findAllExceptId($id);
+  $array['medicament'] = $app['dao.medicament']->find($id);
+  $interaction = new Interaction();
+  $interaction->setMedicament1($array['medicament']);
+  $interactionForm = $app['form.factory']->create(new InteractionType($array['medicaments']), $interaction);
+  $interactionForm->handleRequest($request);
+  if ($interactionForm->isSubmitted() && $interactionForm->isValid()) {
+      $app['dao.interaction']->save($interaction);
+      $app['session']->getFlashBag()->add('success', 'L\'intéraction a été ajouté.');
+  }
+  $array['title'] = 'Ajout d\'une interaction : '.$array['medicament'];
+  $array['interactionForm'] = $interactionForm->createView();
+  return $app['twig']->render('interaction_form.html.twig', $array);
 })->bind('interaction_add');
 
+//Suppression d'une intéraction
+$app->match('/medicament/{id}/interactions/delete/{id_med}',function($id,$id_med) use($app) {
+  $app['dao.interaction']->delete($id,$id_med);
+  $app['session']->getFlashBag()->add('success', 'L\'intéraction a été supprimée.');
 
-// supp interaction
-
-$app->match('/medicament/{id}/interaction/delete/{medId}', function($id,$medId) use ($app) {
-
-    $app['dao.interaction']->delete($id,$medId);
-
-    $app['session']->getFlashBag()->add('success', 'Interaction supprimée!');
-
-	$medicament =$app['dao.medicament']->find($id);
-	$interaction =$app['dao.medicament']->findInteractions($id);
-
-    return $app['twig']->render('medicament.html.twig', array('medicament' =>$medicament, 'interactions'=>$interaction));
-
+  $medicament = $app['dao.medicament']->find($id);
+  $interactions = $app['dao.interaction']->findAllById($id);
+  return $app['twig']->render('medicament.html.twig', array('medicament' => $medicament,'interactions'=> $interactions));
 })->bind('interaction_delete');
-

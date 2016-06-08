@@ -2,41 +2,52 @@
 
 namespace GSB\Domain;
 
-class Interaction 
+class Interaction
 {
     /**
-     * Identifiant.
+     * Medicament 1.
      *
-     * @var integer
+     * @var \GSB\Domain\Medicament
      */
-    private $id;
+    private $medicament1;
 
-  
-    private $medId;
-    
-    private $medicament;
+    /**
+     * Medicament 2.
+     *
+     * @var \GSB\Domain\Medicament
+     */
+    private $medicament2;
 
-    public function getMedicament() {
-        return $this->medicament;
+    /**
+     * @return \GSB\Domain\Medicament
+     */
+    public function getMedicament1()
+    {
+        return $this->medicament1;
     }
 
-    public function setMedicament($medicament) {
-        $this->medicament = $medicament;
-    }
-    public function getId() {
-        return $this->id;
-    }
-
-    public function setId($id) {
-        $this->id = $id;
+    /**
+     * @param \GSB\Domain\Medicament $medicament1
+     */
+    public function setMedicament1( $medicament1)
+    {
+        $this->medicament1 = $medicament1;
     }
 
-    public function getMedId() {
-        return $this->medId;
+    /**
+     * @return \GSB\Domain\Medicament
+     */
+    public function getMedicament2()
+    {
+        return $this->medicament2;
     }
 
-    public function setMedId($medId) {
-        $this->medId = $medId;
+    /**
+     * @param \GSB\Domain\Medicament $medicament2
+     */
+    public function setMedicament2($medicament2)
+    {
+        $this->medicament2 = $medicament2;
     }
 
 

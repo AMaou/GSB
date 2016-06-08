@@ -4,92 +4,90 @@
 {% block title %}{{ medicament.nomCommercial }}{% endblock %}
 
 {% block content %}
-<h2 class="text-center">{{ block('title') }}</h2>
-<div class="well">
-    <form class="form-horizontal" role="form">
-        <div class="form-group">
-            <label class="col-sm-3 control-label">Famille</label>
-            <div class="col-sm-9">
-                <p class="form-control-static">{{ medicament.famille.libelle }}</p>
-            </div>
+    <h2 class="text-center">{{ block('title') }}</h2>
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success">
+            {{ flashMessage }}
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">Dépôt légal</label>
-            <div class="col-sm-9">
-            <p class="form-control-static">{{ medicament.depotLegal }}</p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">Composition</label>
-            <div class="col-sm-9">
-                <p class="form-control-static">{{ medicament.composition }}</p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">Effets secondaires</label>
-            <div class="col-sm-9">
-                <p class="form-control-static">{{ medicament.effets }}</p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">Contre-indication</label>
-            <div class="col-sm-9">
-                <p class="form-control-static">{{ medicament.contreIndication }}</p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">Prix d'un échantillon</label>
-            <div class="col-sm-9">
-                <p class="form-control-static">{{ medicament.prixEchantillon }}</p>
-            </div>
-        </div>
-		<h3>Interactions Médicamenteuses</h3>
-		<div class="table-responsive">
-        <table class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Famille</th>
-                </tr>
-            </thead>
-   
-                {% for interaction in interactions %}
-                <tr>
-                <td><a href="/medicament/{{ interaction.id }}">{{ interaction.nomCommercial }}</a></td>
-				<td>{{ interaction.famille.libelle }}</td>
-                <td>
-                       
-                        <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#articleDialog{{ interaction.id }}"><span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                        <div class="modal fade" id="articleDialog{{ interaction.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                        <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        voulez vous vraiment supprimer cette interaction ?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                        <a href="{{ path('interaction_delete', { 'id': interaction.id,'medId':medicament.id }) }}" class="btn btn-danger">Confirm</a>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
-                    </td>
-                </tr>
-               
-        
-    <div>
-        <a href="{{ path('interaction_add',{ 'id': interaction.id}) }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add </button></a>
-    </div>
+    {% endfor %}
 
-             {% endfor %}
-        </table>
+    <div class="well">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Famille</label>
+
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ medicament.famille.libelle }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Dépôt légal</label>
+
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ medicament.depotLegal }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Composition</label>
+
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ medicament.composition }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Effets secondaires</label>
+
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ medicament.effets }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Contre-indication</label>
+
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ medicament.contreIndication }}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Prix d'un échantillon</label>
+
+                <div class="col-sm-9">
+                    <p class="form-control-static">{{ medicament.prixEchantillon }} €</p>
+                </div>
+            </div>
+            <div class="form-group table-responsive">
+                <label class="col-sm-7 control-label">Intéractions médicamenteuses</label>
+
+                {% if interactions|length > 0 %}
+                    <table class="col-sm-3 table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Famille</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        {% for interaction in interactions %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('medicament', { 'id': interaction.medicament2.id }) }}">{{ interaction.medicament2.nomCommercial }}</a>
+                                </td>
+                                <td>
+                                    {{ interaction.medicament2.famille.libelle }}
+                                </td>
+                                <td>
+                                    <a href="{{ path('interaction_delete', { 'id': medicament.id, 'id_med' : interaction.medicament2.id }) }}">
+                                        <button type="button" class="btn btn-danger btn-xs" title="Delete"><span class="glyphicon glyphicon-remove"></span></button></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <a href="{{ path('interaction_add', { 'id': medicament.id }) }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter une intéraction</button></a>
+                {% else %}
+                  <a href="{{ path('interaction_add', { 'id': medicament.id }) }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter une intéraction</button></a>
+                    <div class="alert alert-warning col-sm-6 col-sm-offset-3 col-sm-">Aucune intéractions trouvée</div>
+              {% endif %}
+            </div>
+        </form>
     </div>
-		
-    </form>
-</div>
 {% endblock %}

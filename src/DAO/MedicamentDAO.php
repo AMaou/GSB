@@ -52,6 +52,19 @@ class MedicamentDAO extends DAO
         }
         return $medicaments;
     }
+    
+    public function findAllByNomFamille($nomCommercial, $familleID) {
+        $sql = "select * from medicament join famille on medicament.id_famille = famille.id_famille where medicament.nom_commercial like ? and medicament.id_famille = ? order by nom_commercial";
+        $result = $this->getDb()->fetchAll($sql, array('%'.$nomCommercial.'%', $familleID));
+        
+        // Convertit les résultats de requête en tableau d'objets du domaine
+        $medicaments = array();
+        foreach ($result as $row) {
+            $medicamentId = $row['id_medicament'];
+            $medicaments[$medicamentId] = $this->buildDomainObject($row);
+        }
+        return $medicaments;
+    }
 
     /**
      * Renvoie un médicament à partir de son identifiant
@@ -68,32 +81,6 @@ class MedicamentDAO extends DAO
             return $this->buildDomainObject($row);
         else
             throw new \Exception("Aucun médicament ne correspond à l'identifiant " . $id);
-    }
-	       public function findAllByNomFamille($nomCommercial, $familleID) {
-        $sql = "select * from medicament join famille on medicament.id_famille = famille.id_famille where medicament.nom_commercial like ? and medicament.id_famille = ? order by nom_commercial";
-        $result = $this->getDb()->fetchAll($sql, array('%'.$nomCommercial.'%', $familleID));
-        
-        // Convertit les résultats de requête en tableau d'objets du domaine
-        $medicaments = array();
-        foreach ($result as $row) {
-            $medicamentId = $row['id_medicament'];
-            $medicaments[$medicamentId] = $this->buildDomainObject($row);
-        }
-        return $medicaments;
-    }
-	
-	public function findInteractions($id) {
-        $sql = "SELECT m.id_medicament, m.id_famille, m.depot_legal, m.nom_commercial, m.composition, m.effets, m.contre_indication, m.prix_echantillon from medicament m join interagir on m.id_medicament= 								interagir.med_id_medicament where interagir.id_medicament=?";
-        $result = $this->getDb()->fetchAll($sql, array($id));
-		
-		$interactions = array();
-		if (!empty($result)){
-        foreach ($result as $row) {
-            $medicamentId = $row['id_medicament'];
-            $interactions[$medicamentId] = $this->buildDomainObject($row);
-        }
-		}
-		return $interactions;
     }
 
     /**
@@ -121,5 +108,47 @@ class MedicamentDAO extends DAO
         }
    
         return $medicament;
+    }
+
+
+    /**
+     * Renvoie la liste de tous les médicaments contenant le nom entré en paramètre
+     *
+     * @param $NomMed Nom d'un médicament
+     *
+     * @return array La liste des médicaments
+     */
+    public function findAllByNom($nomMed) {
+        $sql = "select * from medicament where nom_commercial like ? order by nom_commercial";
+        $result = $this->getDb()->fetchAll($sql, array('%'.$nomMed.'%'));
+
+        // Convertit les résultats de requête en tableau d'objets du domaine
+        $medicaments = array();
+        foreach ($result as $row) {
+            $medicamentId = $row['id_medicament'];
+            $medicaments[$medicamentId] = $this->buildDomainObject($row);
+        }
+        return $medicaments;
+    }
+
+    /**
+     * Renvoie la liste de tous les médicaments, sans celui rentré en paramètre
+     *
+     * @return array La liste de tous les médicaments
+     */
+    public function findAllExceptId($id) {
+        $sql = "select * from medicament where id_medicament != ? AND id_medicament
+                NOT IN(select id_medicament FROM interagir where med_id_medicament = ?)
+                AND id_medicament NOT IN(select med_id_medicament FROM interagir where id_medicament = ?)
+                order by nom_commercial";
+        $result = $this->getDb()->fetchAll($sql, array($id,$id,$id));
+
+        // Convertit les résultats de requête en tableau d'objets du domaine
+        $medicaments = array();
+        foreach ($result as $row) {
+            $medicamentId = $row['id_medicament'];
+            $medicaments[$medicamentId] = $this->buildDomainObject($row);
+        }
+        return $medicaments;
     }
 }

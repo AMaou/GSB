@@ -59,8 +59,6 @@ class Medicament
      * @var \GSB\Domaine\Famille
      */
     private $famille;
-	
-	
 
     public function getId() {
         return $this->id;
@@ -125,6 +123,9 @@ class Medicament
     public function setFamille(Famille $famille) {
         $this->famille = $famille;
     }
-	
 
+    public function __toString()
+    {
+        return $this->getNomCommercial();
+    }
 }
