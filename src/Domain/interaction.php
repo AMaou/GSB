@@ -13,8 +13,16 @@ class Interaction
 
   
     private $medId;
+    
+    private $medicament;
 
+    public function getMedicament() {
+        return $this->medicament;
+    }
 
+    public function setMedicament($medicament) {
+        $this->medicament = $medicament;
+    }
     public function getId() {
         return $this->id;
     }

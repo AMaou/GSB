@@ -1,10 +1,10 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\Form\Extension\Core\Type;
 use GSB\Domain\Interaction;
-
 use GSB\Form\Type\InteractionType;
+
 
 
 
@@ -60,9 +60,10 @@ $app->get('/login', function(Request $request) use ($app) {
 $app->match('/medicament/{id}/interaction/add', function(Request $request,$id) use ($app) {
 	
 	$array['medicament']=$app['dao.medicament']->find($id);
+    $array['medicaments']=$app['dao.medicament']->findAll();
     $interaction = new Interaction();
-	$interaction->setMedicament1($array['medicament']);
-    $interactionForm = $app['form.factory']->create(new InteractionType($array['medicament']), $interaction);
+	$interaction->setId($array['medicament']);
+    $interactionForm = $app['form.factory']->create(new InteractionType($array['medicaments']), $interaction);
 
     $interactionForm->handleRequest($request);
 

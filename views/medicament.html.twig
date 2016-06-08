@@ -52,7 +52,7 @@
                     <th>Famille</th>
                 </tr>
             </thead>
-       <!-- -->     
+   
                 {% for interaction in interactions %}
                 <tr>
                 <td><a href="/medicament/{{ interaction.id }}">{{ interaction.nomCommercial }}</a></td>
@@ -85,7 +85,7 @@
     <div>
         <a href="{{ path('interaction_add',{ 'id': interaction.id}) }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add </button></a>
     </div>
-  <!-- -->  
+
              {% endfor %}
         </table>
     </div>
