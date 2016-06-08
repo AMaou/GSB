@@ -80,12 +80,13 @@
                         </div><!-- /.modal -->
                     </td>
                 </tr>
-                {% endfor %}
+               
         
     <div>
-        <a href="{{ path('interaction_add') }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add </button></a>
+        <a href="{{ path('interaction_add',{ 'id': interaction.id}) }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add </button></a>
     </div>
   <!-- -->  
+             {% endfor %}
         </table>
     </div>
 		

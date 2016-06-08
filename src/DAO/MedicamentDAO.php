@@ -83,7 +83,7 @@ class MedicamentDAO extends DAO
     }
 	
 	public function findInteractions($id) {
-        $sql = "SELECT m.id_medicament, m.id_famille, m.depot_legal, m.nom_commercial, m.composition, m.effets, 					m.contre_indication, m.prix_echantillon from medicament m join interagir on m.id_medicament= 								interagir.med_id_medicament and interagir.id_medicament=?";
+        $sql = "SELECT m.id_medicament, m.id_famille, m.depot_legal, m.nom_commercial, m.composition, m.effets, m.contre_indication, m.prix_echantillon from medicament m join interagir on m.id_medicament= 								interagir.med_id_medicament where interagir.id_medicament=?";
         $result = $this->getDb()->fetchAll($sql, array($id));
 		
 		$interactions = array();

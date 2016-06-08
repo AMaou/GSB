@@ -90,7 +90,7 @@ $app->match('/medicament/{id}/interaction/delete/{medId}', function($id,$medId) 
     $app['session']->getFlashBag()->add('success', 'Interaction supprimée!');
 
 	$medicament =$app['dao.medicament']->find($id);
-	$interactions = $app['dao.interaction']->findAllById($id);
+	$interaction =$app['dao.medicament']->findInteractions($id);
 
     return $app['twig']->render('medicament.html.twig', array('medicament' =>$medicament, 'interactions'=>$interaction));
 
